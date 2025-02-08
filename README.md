@@ -68,7 +68,7 @@ At this point, the AIO MQTT Broker is ready.
 
 ## Install Elastel EG324 IIoT Gateway
 
-**<mark> WARNING </mark>** *This is an industrial-grade equipment. When used in a residential environment, make sure you follow expert guidance on how to properly supply 12V DC power to the unit to avoid damage/hazards. In my lab, I have properly mounted the gateway on a DIN rail attached to the server rack with the NVVV EDR-120W-12V Industrial DIN rail power supply as shown in the photo at the beginning of this tutorial.*
+**<mark> ~WARNING~ </mark>** *This is an industrial-grade equipment. When used in a residential environment, make sure you follow expert guidance on how to properly supply 12V DC power to the unit to avoid damage/hazards. In my lab, I have properly mounted the gateway on a DIN rail attached to the server rack with the NVVV EDR-120W-12V Industrial DIN rail power supply as shown in the photo at the beginning of this tutorial.*
 
 1. Go to the web portal of EG324 and configure networking: [WAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/WAN#wired-ethernet-settings)
 
@@ -126,6 +126,14 @@ At this point, the AIO MQTT Broker is ready.
    
    ```
    systemctl restart mosquitto
+   ```
+
+3. Examine the Kubernetes logs of AIO MQTT broker and confirm it's securely bridged with EG324:
+   
+   ```
+   azureuser@ubuntu2404:~$ sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
+   <6>2025-02-08T17:49:55.248Z aio-broker-frontend-0 [mq@311 tid="28"] - accepting new MQTT client connection: 'ElastPro.cloud-01', tag: '4', clean start: false
+   <6>2025-02-08T17:49:55.253Z aio-broker-frontend-0 [mq@311 tid="28"] - new MQTT client connection accepted: 'ElastPro.cloud-01', tag: '4', with credentials that expire at 2025-04-23T02:17:44+00:00
    ```
 
 ## Build Zephyr app and publish MQTT to IIoT Gateway
@@ -249,7 +257,13 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 2. Use the same set of server and client certificate to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO:
    
-   s
+   ![s](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true)
+
+## Conclusion
+
+From this point, you are ready to configure AIO Data Flows,  process and route data to the Data Endpoints. That is not covered in this tutorial as the procedures are outlined in the Azure document: [Process and route data with data flows - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow)
+
+As mentioned in the beginning of tutorial, the scenario is a very common way of how to establish data communication between IIoT sensors and the cloud.
 
 ## Resources
 
