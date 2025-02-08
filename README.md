@@ -1,6 +1,8 @@
 # Connecting IIoT Gateway to Azure IoT Operations
 
+<p align="center">
 <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-main.jpg?raw=true" alt="main-pic" width="339" data-align="center">
+</p>
 
 An Industrial IoT (IIoT) solution deployed at the edge location often integrates microcontroller-based devices, sensors, and PLCs into industrial processes to gather data, monitor operations, and improve efficiency.  The goal is to enable real-time monitoring, predictive maintenance, automation, and data-driven decision-making in industries such as manufacturing, building automation, energy, transportation, and agriculture.
 
@@ -17,8 +19,6 @@ This tutorial demonstrates a real-world scenario where a MCU-based device (an AR
 Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
 
 <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32f429zi.jpg?raw=true" alt="stm32" width="200">  <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-2.JPG?raw=true" alt="eg324" width="214">
-
-
 
 ## Tutorial Prerequisites
 
