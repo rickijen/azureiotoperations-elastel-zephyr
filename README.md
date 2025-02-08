@@ -10,6 +10,10 @@ IIoT gateway is a critical component in the solution to aggregate data via indus
 
 This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html) publishes MQTT messages to the [EG324 IoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/) IIoT Gateway, which then sends data to the AIO MQTT broker. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream. Finally, we will subscribe the AIO MQTT broker to confirm messages are delivered correctly.
 
+Here are the MCU device and Elastel EG324 IIoT Gateway used in this tutorial:
+
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32nucleo.jpg?raw=true" alt="stm32" width="295">   <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel.jpg?raw=true" alt="eg324" width="166">
+
 ## Architecture
 
 <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Elastel-HiveMQ.png?raw=true" alt="Architecture" data-align="inline">
