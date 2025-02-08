@@ -68,7 +68,7 @@ At this point, the AIO MQTT Broker is ready.
 
 ## Install Elastel EG324 IIoT Gateway
 
-**<mark> WARNING </mark>** *This is an industrial-grade equipment. When used in a residential environment, make sure you follow expert guidance on how to properly supply 12V DC power to the unit to avoid damage/hazards. In my lab, I have properly mounted the gateway on a DIN rail attached to the server rack with the NVVV EDR-120W-12V Industrial DIN rail power supply.*
+**<mark> WARNING </mark>** *This is an industrial-grade equipment. When used in a residential environment, make sure you follow expert guidance on how to properly supply 12V DC power to the unit to avoid damage/hazards. In my lab, I have properly mounted the gateway on a DIN rail attached to the server rack with the NVVV EDR-120W-12V Industrial DIN rail power supply as shown in the photo at the beginning of this tutorial.*
 
 1. Go to the web portal of EG324 and configure networking: [WAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/WAN#wired-ethernet-settings)
 
@@ -80,15 +80,15 @@ At this point, the AIO MQTT Broker is ready.
 
 ## Connect IIoT Gateway to AIO via MQTT with TLS
 
-1. Download the server and client certificates (generated in previous steps) to EG324 Gateway and use the following configuration as a reference, tail to your environment. The purpose of this section is to securely bridge the Mosquitto broker on EG324 to the local MQTT broker of AIO. With the provided server and client certificates, we can establish the MQTT bridge over mTLS.
+1. Download the server and client certificates (generated in previous steps) to EG324 Gateway and use the following configuration as a reference, customize it to your environment. The purpose of this section is to securely bridge the Mosquitto broker of EG324 to the local MQTT broker of AIO. With the provided server and client certificates, we can establish the MQTT bridge over mTLS.
    
    For example, you will need to change the address of AIO broker and place proper references to certificates:
    
-   | Variable        | Certificate                                     |
-   | --------------- | ----------------------------------------------- |
-   | bridge_cafile   | This is the CA cert installed on the AIO broker |
-   | bridge_certfile | This is the client cert of Mosquitto            |
-   | bridge_keyfile  | This is the private key of client cert          |
+   | Variable        | Certificate                                    |
+   | --------------- | ---------------------------------------------- |
+   | bridge_cafile   | The CA certificate installed on the AIO broker |
+   | bridge_certfile | The client certificate of Mosquitto            |
+   | bridge_keyfile  | The private key of client certificate          |
    
    ```
    # Place your local configuration in /etc/mosquitto/conf.d/
@@ -216,6 +216,40 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    Application is running, Please Hold on...
    Start operation achieved successfully
    ```
+
+5. From the serial console of the STM32 MCU device, we can see the MQTT message are delivered to EG324 Gateway:
+   
+   ```
+   [00:00:08.453,000] <inf> net_mqtt_publisher_sample:    Address[1]: 192.168.1.104
+   [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Subnet[1]: 255.255.255.0
+   [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Router[1]: 192.168.1.1
+   [00:00:08.453,000] <inf> net_mqtt_publisher_sample: Lease time[1]: 172800 seconds
+   [00:00:08.453,000] <inf> net_config: IPv4 address: 192.168.1.104
+   [00:00:08.453,000] <inf> net_config: Lease time: 172800 seconds
+   [00:00:08.453,000] <inf> net_config: Subnet: 255.255.255.0
+   [00:00:08.453,000] <inf> net_config: Router: 192.168.1.1
+   [00:00:11.817,000] <inf> net_mqtt_publisher_sample: attempting to connect: 
+   [00:00:11.818,000] <dbg> net_sock: zsock_socket_internal: (main): socket: ctx=0x20002f20, fd=5
+   [00:00:11.819,000] <inf> net_mqtt: Connect completed
+   [00:00:11.821,000] <dbg> net_sock: zsock_received_cb: (rx_q[0]): ctx=0x20002f20, pkt=0x2000f9c8, st=0, user_data=0
+   [00:00:11.821,000] <inf> net_mqtt_publisher_sample: MQTT client connected!
+   [00:00:11.821,000] <inf> net_mqtt_publisher_sample: try_to_connect: 0 <OK>
+   [00:00:11.821,000] <inf> net_mqtt_publisher_sample: mqtt_ping: 0 <OK>
+   [00:00:11.822,000] <dbg> net_sock: zsock_received_cb: (rx_q[0]): ctx=0x20002f20, pkt=0x2000f9c8, st=0, user_data=0
+   [00:00:11.822,000] <inf> net_mqtt_publisher_sample: PINGRESP packet
+   [00:00:12.321,000] <inf> net_mqtt_publisher_sample: mqtt_publish: 0 <OK>
+   [00:00:12.821,000] <inf> net_mqtt_publisher_sample: mqtt_publish: 0 <OK>
+   [00:00:12.822,000] <dbg> net_sock: zsock_received_cb: (rx_q[0]): ctx=0x20002f20, pkt=0x2000f9c8, st=0, user_data=0
+   [00:00:12.822,000] <inf> net_mqtt_publisher_sample: PUBACK packet id: 13567
+   ```
+
+## Verify MQTT from IIoT Gateway to AIO MQTT broker
+
+1. Use your favorite MQTT client, or download [MQTTX: Your All-in-one MQTT Client Toolbox](https://mqttx.app/)
+
+2. Use the same set of server and client certificate to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO:
+   
+   s
 
 ## Resources
 
