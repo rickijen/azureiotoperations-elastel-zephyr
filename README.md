@@ -6,15 +6,15 @@
 
 An Industrial IoT (IIoT) solution deployed at the edge location often integrates microcontroller-based devices, sensors, and PLCs into industrial processes to gather data, monitor operations, and improve efficiency.  The goal is to enable real-time monitoring, predictive maintenance, automation, and data-driven decision-making in industries such as manufacturing, building automation, energy, transportation, and agriculture.
 
-IIoT gateway is a critical component in the solution to aggregate data via industry standard protocols (such as [Modbus](https://en.wikipedia.org/wiki/Modbus), [BACnet](https://en.wikipedia.org/wiki/BACnet), [OPC UA](https://en.wikipedia.org/wiki/OPC_Unified_Architecture), [Sparkplug](https://sparkplug.eclipse.org/), etc.) and send data to the cloud.
+IIoT gateway is a critical component in the solution to aggregate data collected from industry standard protocols (such as [Modbus](https://en.wikipedia.org/wiki/Modbus), [BACnet](https://en.wikipedia.org/wiki/BACnet), [OPC UA](https://en.wikipedia.org/wiki/OPC_Unified_Architecture), [Sparkplug](https://sparkplug.eclipse.org/), etc.). The Gateway then processes and routes data to the cloud.
 
-[Azure IoT Operations](https://learn.microsoft.com/en-us/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster running at the edge site. With proper [Data Flows](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT Gateway can be delivered to the cloud and control commands can be delivered from cloud to devices as well.
+[Azure IoT Operations](https://learn.microsoft.com/en-us/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster installed at the edge site. With proper [Data Flows](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT Gateway can be delivered to the cloud. Control commands can be delivered from cloud to devices as well.
 
 ## Architecture Overview
 
 ![Architecture](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Elastel-HiveMQ.png?raw=true)
 
-This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then sends data to the AIO MQTT broker. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. Finally, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly.
+This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then routes data to the AIO MQTT broker. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. Finally, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly.
 
 Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
 
@@ -22,13 +22,13 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
 
 ## Tutorial Prerequisites
 
-- An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) locally at the edge. Follow this [doc](https://learn.microsoft.com/en-us/azure/iot-operations/deploy-iot-ops/howto-prepare-cluster?tabs=ubuntu) to make sure your cluster is prepared to install IoT Operations.
+- An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) is already installed locally at the edge. Follow this [doc](https://learn.microsoft.com/en-us/azure/iot-operations/deploy-iot-ops/howto-prepare-cluster?tabs=ubuntu) to make sure your cluster is prepared to install IoT Operations.
 
 - Install Elastel EG324 IIoT Gateway and completed the steps in [Getting Started | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Getting_Started)
 
 - MCU-based development boards (from Nordic, ST, NXP, etc.).
 
-- Prepare Zephyer SDK toolchains and build environment by following: [Getting Started Guide — Zephyr Project Documentation](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) 
+- Prepare Zephyer SDK toolchains and its Python build environment by following: [Getting Started Guide — Zephyr Project Documentation](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) 
 
 ## Install Azure IoT Operations
 
@@ -38,7 +38,7 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
    az extension add --upgrade --name azure-iot-ops
    ```
 
-2. Deploy to cluster (example: for my single node cluster).
+2. Deploy to the Kubernetes cluster (example: for my single node cluster).
    
    ```
    az iot ops create --subscription XXX \
@@ -51,7 +51,7 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
    --ops-config observability.metrics.exportInternalSeconds=60
    ```
 
-3. Verify IoT Ops service deployment output for health, configuration, and usability. If you have installed IoT Ops previously, make sure to **check for upgrade** first
+3. Verify IoT Ops service deployment output for health, configuration, and usability. If you have installed IoT Ops previously, make sure to **check for upgrade** first.
    
    ```
    az extension add --upgrade --name azure-iot-ops
@@ -72,7 +72,7 @@ At this point, the AIO MQTT Broker is ready.
 
 1. Go to the web portal of EG324 and configure networking: [WAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/WAN#wired-ethernet-settings)
 
-2. *Optional*: When LoRaWAN is appropriate for the environment, follow: [LoRaWAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/LoRaWAN)
+2. *Optional*: When LoRaWAN is appropriate for your environment, follow: [LoRaWAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/LoRaWAN)
 
 3. Configure MQTT setting in: [Reporting Center | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Data_Collect/North_Apps/Reporting_Center/#mqtt-protocol)
 
@@ -84,7 +84,7 @@ At this point, the AIO MQTT Broker is ready.
    
    For example, you will need to change the address of AIO broker and place proper references to certificates:
    
-   | Variable        | Certificate                                    |
+   | Variable        | Certificate type                               |
    | --------------- | ---------------------------------------------- |
    | bridge_cafile   | The CA certificate installed on the AIO broker |
    | bridge_certfile | The client certificate of Mosquitto            |
@@ -128,7 +128,7 @@ At this point, the AIO MQTT Broker is ready.
    systemctl restart mosquitto
    ```
 
-3. Examine the Kubernetes logs of AIO MQTT broker and confirm it's securely bridged with EG324:
+3. Examine the Kubernetes logs of AIO MQTT broker and confirm it's securely bridged with EG324 Gateway:
    
    ```
    azureuser@ubuntu2404:~$ sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
@@ -150,7 +150,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    # C:\Users\rijen\zephyrproject\zephyr\samples\net\mqtt_publisher
    ```
 
-3. Build the project with the Zephyr util **West**, or if you have already configured proper VS Code IDE extensions, you can simply build directly from VS Code. Update the file "prj.conf" with the correct IP address of your IIoT Gateway before running west build.
+3. Build the project with the Zephyr util **West**, or if you have already configured proper VS Code IDE extensions, you can simply build directly from VS Code. Update the file **prj.conf** with the correct IP address of your IIoT Gateway before running west build.
    
    ```
    CONFIG_NET_CONFIG_PEER_IPV4_ADDR="192.168.1.105"
@@ -176,7 +176,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    Generating files from C:/Users/rijen/zephyrproject/zephyr/mqtt_publisher/zephyr/zephyr.elf for board: nucleo_f429zi
    ```
 
-4. Once build is completed, flash the elf binary to the board.
+4. Once build is completed, flash the binary to the board.
    
    ```
    (.venv) $ west flash --build-dir mqtt_publisher
@@ -253,9 +253,9 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 ## Verify MQTT from IIoT Gateway to AIO MQTT broker
 
-1. Use your favorite MQTT client, or download [MQTTX: Your All-in-one MQTT Client Toolbox](https://mqttx.app/)
+1. Install your favorite MQTT client, or download [MQTTX: Your All-in-one MQTT Client Toolbox](https://mqttx.app/)
 
-2. Use the same set of server and client certificate to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO:
+2. Use the same set of server and client certificates to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO.
    
    ![s](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true)
 
@@ -263,7 +263,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 From this point, you are ready to configure AIO Data Flows,  process and route data to the Data Endpoints. That is not covered in this tutorial as the procedures are outlined in the Azure document: [Process and route data with data flows - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow)
 
-As mentioned in the beginning of tutorial, the scenario is a very common way of how to establish data communication between IIoT sensors and the cloud.
+As mentioned in the beginning of tutorial, the scenario is a very common method of establishing data communication between IIoT sensors and the cloud via an IIoT Gateway.
 
 ## Resources
 
