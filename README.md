@@ -12,7 +12,7 @@ This tutorial demonstrates a real-world scenario where a MCU-based device (an AR
 
 Here are the MCU device and Elastel EG324 IIoT Gateway used in this tutorial:
 
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32nucleo.jpg?raw=true" alt="stm32" width="295">   <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel.jpg?raw=true" alt="eg324" width="166">
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32f429zi.jpg?raw=true" alt="stm32" width="260">  <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel.jpg?raw=true" alt="eg324" width="260">
 
 ## Architecture
 
