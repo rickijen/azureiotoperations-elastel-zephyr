@@ -2,7 +2,7 @@
 
 <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-main.jpg?raw=true" alt="main-pic" width="196">
 
-An Industrial IoT solution deployed at the edge location often integrates microcontroller-based devices, sensors, and PLCs (programmable logic controllers) into industrial processes to gather data, monitor operations, and improve efficiency.  The goal is to enable real-time monitoring, predictive maintenance, automation, and data-driven decision-making in industries such as manufacturing, building automation, energy, transportation, and agriculture.
+An Industrial IoT (IIoT) solution deployed at the edge location often integrates microcontroller-based devices, sensors, and PLCs into industrial processes to gather data, monitor operations, and improve efficiency.  The goal is to enable real-time monitoring, predictive maintenance, automation, and data-driven decision-making in industries such as manufacturing, building automation, energy, transportation, and agriculture.
 
 IIoT gateway is a critical component in the solution to aggregate data via industry standard protocols (such as [Modbus](https://en.wikipedia.org/wiki/Modbus), [BACnet](https://en.wikipedia.org/wiki/BACnet), [OPC UA](https://en.wikipedia.org/wiki/OPC_Unified_Architecture), [Sparkplug](https://sparkplug.eclipse.org/), etc.) and send data to the cloud.
 
@@ -14,7 +14,7 @@ This tutorial demonstrates a real-world scenario where a MCU-based device (an AR
 
 Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
 
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32f429zi.jpg?raw=true" alt="stm32" width="165">  <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-2.JPG?raw=true" alt="eg324" width="175">
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32f429zi.jpg?raw=true" alt="stm32" width="148">  <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-2.JPG?raw=true" alt="eg324" width="158">
 
 ## Architecture
 
@@ -22,7 +22,7 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
 
 ## Prerequisites
 
-- An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) locally at the edge.
+- An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) locally at the edge. Follow this [doc](https://learn.microsoft.com/en-us/azure/iot-operations/deploy-iot-ops/howto-prepare-cluster?tabs=ubuntu) to make sure your cluster is prepared to install IoT Operations.
 
 - Elastel EG324 IIoT Gateway
 
@@ -32,7 +32,28 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
 
 ## Install Azure IoT Operations
 
+1. Make sure you have the latest Azure CLI extension
+   
+   ```
+   az extension add --upgrade --name azure-iot-ops
+   ```
 
+2. Deploy to cluster (example: for my single node cluster)
+   
+   ```
+   az iot ops create --subscription XXX \
+   -g iot --cluster redondok3s --custom-location redondok3s-cl-3792 \
+   -n redondok3s-ops-instance --resource-id /subscriptions/XXX/resourceGroups/iot/providers/Microsoft.DeviceRegistry/schemaRegistries/schema-registry-redondo \
+   --broker-frontend-replicas 1 --broker-frontend-workers 1 \
+   --broker-backend-part 1 --broker-backend-workers 1 \
+   --broker-backend-rf 2 --broker-mem-profile Low \
+   --ops-config observability.metrics.openTelemetryCollectorAddress=aio-otel-collector.azure-iot-operations.svc.cluster.local:4317 \
+   --ops-config observability.metrics.exportInternalSeconds=60
+   ```
+
+3. Verify IoT ops service deployment for health, configuration, and usability
+
+4. next
 
 ## Install Elastel EG324 IIoT Gateway
 
