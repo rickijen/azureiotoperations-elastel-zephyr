@@ -1,6 +1,6 @@
-# Connecting Industrial IoT Gateway to Azure IoT Operations
+# Connecting IIoT Gateway to Azure IoT Operations
 
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-main.jpg?raw=true" alt="main-pic" width="196">
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-main.jpg?raw=true" alt="main-pic" width="223">
 
 An Industrial IoT (IIoT) solution deployed at the edge location often integrates microcontroller-based devices, sensors, and PLCs into industrial processes to gather data, monitor operations, and improve efficiency.  The goal is to enable real-time monitoring, predictive maintenance, automation, and data-driven decision-making in industries such as manufacturing, building automation, energy, transportation, and agriculture.
 
@@ -8,37 +8,37 @@ IIoT gateway is a critical component in the solution to aggregate data via indus
 
 [Azure IoT Operations](https://learn.microsoft.com/en-us/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster running at the edge site. With proper [Data Flows](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT Gateway can be delivered to the cloud and control commands can be delivered from cloud to devices as well.
 
-## Overview
+## Architecture Overview
 
-This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [EG324 IoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/) The IIoT Gateway, which then sends data to the AIO MQTT broker. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. Finally, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly.
+![Architecture](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Elastel-HiveMQ.png?raw=true)
+
+This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then sends data to the AIO MQTT broker. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. Finally, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly.
 
 Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
 
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32f429zi.jpg?raw=true" alt="stm32" width="148">  <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-2.JPG?raw=true" alt="eg324" width="158">
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32f429zi.jpg?raw=true" alt="stm32" width="162">  <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-2.JPG?raw=true" alt="eg324" width="174">
 
-## Architecture
 
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Elastel-HiveMQ.png?raw=true" alt="Architecture" data-align="inline">
 
-## Prerequisites
+## Tutorial Prerequisites
 
 - An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) locally at the edge. Follow this [doc](https://learn.microsoft.com/en-us/azure/iot-operations/deploy-iot-ops/howto-prepare-cluster?tabs=ubuntu) to make sure your cluster is prepared to install IoT Operations.
 
-- Elastel EG324 IIoT Gateway
+- Install Elastel EG324 IIoT Gateway and completed the steps in [Getting Started | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Getting_Started)
 
-- MCU-based development boards (from Nordic, STM32, NXP, etc.)
+- MCU-based development boards (from Nordic, ST, NXP, etc.).
 
-- Zephyer RTOS SDK toolchains and build environment.
+- Prepare Zephyer SDK toolchains and build environment by following: [Getting Started Guide — Zephyr Project Documentation](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) 
 
 ## Install Azure IoT Operations
 
-1. Make sure you have the latest Azure CLI extension
+1. Make sure you have the latest Azure CLI extension.
    
    ```
    az extension add --upgrade --name azure-iot-ops
    ```
 
-2. Deploy to cluster (example: for my single node cluster)
+2. Deploy to cluster (example: for my single node cluster).
    
    ```
    az iot ops create --subscription XXX \
@@ -51,15 +51,171 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
    --ops-config observability.metrics.exportInternalSeconds=60
    ```
 
-3. Verify IoT ops service deployment for health, configuration, and usability
+3. Verify IoT Ops service deployment output for health, configuration, and usability. If you have installed IoT Ops previously, make sure to **check for upgrade** first
+   
+   ```
+   az extension add --upgrade --name azure-iot-ops
+   az iot ops check
+   ```
+   
+   ![asdc](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/iot-ops-check.png?raw=true)
 
-4. next
+4. In order to secure the MQTT bridge between IIoT Gateway and AIO MQTT Broker, prepare **server and client certificates** to be installed on the AIO MQTT broker and IIoT Gateway by following: [Tutorial: Azure IoT Operations MQTT broker TLS, X.509 client authentication, and ABAC - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/manage-mqtt-broker/tutorial-tls-x509)
+
+5. Create a new AIO MQTT Broker Load Balancer listener (with the server certificate created in the previous step) on **port 8883** with **X509-auth**: [Secure MQTT broker communication by using BrokerListener - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/manage-mqtt-broker/howto-configure-brokerlistener?tabs=portal%2Ctest)
+
+At this point, the AIO MQTT Broker is ready.
 
 ## Install Elastel EG324 IIoT Gateway
 
-## Connect IIoT Gateway to AIO
+**<mark> WARNING </mark>** *This is an industrial-grade equipment. When used in a residential environment, make sure you follow expert guidance on how to properly supply 12V DC power to the unit to avoid damage/hazards. In my lab, I have properly mounted the gateway on a DIN rail attached to the server rack with the NVVV EDR-120W-12V Industrial DIN rail power supply.*
 
-## Build Zephyr app to publish MQTT to IIoT Gateway
+1. Go to the web portal of EG324 and configure networking: [WAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/WAN#wired-ethernet-settings)
+
+2. *Optional*: When LoRaWAN is appropriate for the environment, follow: [LoRaWAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/LoRaWAN)
+
+3. Configure MQTT setting in: [Reporting Center | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Data_Collect/North_Apps/Reporting_Center/#mqtt-protocol)
+
+4. This IIoT Gateway has a built-in **Mosquitto MQTT broker**, so optionally, you can bring in your own configuration file. When you completed the basic broker configuration, move on to the next section. Refer to the manual for Mosquitto: [mosquitto.conf man page | Eclipse Mosquitto](https://mosquitto.org/man/mosquitto-conf-5.html)
+
+## Connect IIoT Gateway to AIO via MQTT with TLS
+
+1. Download the server and client certificates (generated in previous steps) to EG324 Gateway and use the following configuration as a reference, tail to your environment. The purpose of this section is to securely bridge the Mosquitto broker on EG324 to the local MQTT broker of AIO. With the provided server and client certificates, we can establish the MQTT bridge over mTLS.
+   
+   For example, you will need to change the address of AIO broker and place proper references to certificates:
+   
+   | Variable        | Certificate                                     |
+   | --------------- | ----------------------------------------------- |
+   | bridge_cafile   | This is the CA cert installed on the AIO broker |
+   | bridge_certfile | This is the client cert of Mosquitto            |
+   | bridge_keyfile  | This is the private key of client cert          |
+   
+   ```
+   # Place your local configuration in /etc/mosquitto/conf.d/
+   #
+   # A full description of the configuration file is at
+   # /usr/share/doc/mosquitto/examples/mosquitto.conf.example
+   
+   pid_file /var/run/mosquitto.pid
+   
+   persistence true
+   persistence_location /var/lib/mosquitto/
+   
+   log_dest file /var/log/mosquitto/mosquitto.log
+   
+   include_dir /etc/mosquitto/conf.d
+   
+   # Bridge connection
+   connection cloud-01
+   address 10.1.0.5:8883
+   bridge_cafile /etc/mosquitto/ca_certificates/contoso_root_ca.crt
+   bridge_certfile /etc/mosquitto/certs/thermostat.crt
+   bridge_keyfile /etc/mosquitto/certs/thermostat.key
+   topic # out 0
+   topic # in 0
+   #remote_username nucleo
+   #remote_password Redondo123Redondo123
+   bridge_protocol_version mqttv311
+   try_private false
+   notifications false
+   bridge_attempt_unsubscribe false
+   bridge_insecure true
+   ```
+
+2. Restart the service to securely bridge the two MQTT brokers
+   
+   ```
+   systemctl restart mosquitto
+   ```
+
+## Build Zephyr app and publish MQTT to IIoT Gateway
+
+Now that all the plumbing is completed after **securely bridging the two MQTT brokers over mTLS**, we are ready to build the client app running on the MCU device.
+
+1. Open the root folder of your Zephyr project, activate the Python Virtual Environment from the terminal.
+
+2. Git clone the Zephyr demo app and copy the code to the **sample** directory under the Zephyr project
+   
+   ```
+   git clone https://github.com/rickijen/zephyr-dhcp-mqtt
+   # And copy the code under Zephyr sample dir, for example, mine is:
+   # C:\Users\rijen\zephyrproject\zephyr\samples\net\mqtt_publisher
+   ```
+
+3. Build the project with the Zephyr util **West**, or if you have already configured proper VS Code IDE extensions, you can simply build directly from VS Code. Update the file "prj.conf" with the correct IP address of your IIoT Gateway before running west build.
+   
+   ```
+   CONFIG_NET_CONFIG_PEER_IPV4_ADDR="192.168.1.105"
+   ```
+   
+   ```
+   (.venv) $ pwd
+   
+   Path
+   ----
+   C:\Users\rijen\zephyrproject\zephyr
+   
+   (.venv) $ ~\zephyrproject\.venv\Scripts\Activate.ps1
+   (.venv) $ west build -b nucleo_f429zi .\samples\net\mqtt_publisher --build-dir mqtt_publisher --p auto
+   [1/13] Generating include/generated/zephyr/version.h
+   -- Zephyr version: 4.0.99 (C:/Users/rijen/zephyrproject/zephyr), build: v4.0.0-4184-ga253fe27c9f1
+   [13/13] Linking C executable zephyr\zephyr.elf
+   Memory region         Used Size  Region Size  %age Used
+              FLASH:      177584 B         2 MB      8.47%
+                RAM:       71016 B       192 KB     36.12%
+                CCM:          0 GB        64 KB      0.00%
+           IDT_LIST:          0 GB        32 KB      0.00%
+   Generating files from C:/Users/rijen/zephyrproject/zephyr/mqtt_publisher/zephyr/zephyr.elf for board: nucleo_f429zi
+   ```
+
+4. Once build is completed, flash the elf binary to the board.
+   
+   ```
+   (.venv) $ west flash --build-dir mqtt_publisher
+   -- west flash: rebuilding
+   ninja: no work to do.
+   -- west flash: using runner stm32cubeprogrammer
+         -------------------------------------------------------------------
+                          STM32CubeProgrammer v2.18.0
+         -------------------------------------------------------------------
+   
+   ST-LINK SN  : 066AFF333837424757174644
+   ST-LINK FW  : V2J39M27
+   Board       : NUCLEO-F429ZI
+   Voltage     : 3.24V
+   SWD freq    : 4000 KHz
+   Connect mode: Under Reset
+   Reset mode  : Hardware reset
+   Device ID   : 0x419
+   Revision ID : Rev 5/B
+   Device name : STM32F42xxx/F43xxx
+   Flash size  : 2 MBytes
+   Device type : MCU
+   Device CPU  : Cortex-M4
+   BL Version  : 0x91
+   
+   Opening and parsing file: zephyr.hex
+   Opening and parsing file: zephyr.hex
+   Opening and parsing file: zephyr.hex
+   
+   Memory Programming ...
+   Memory Programming ...
+     File          : zephyr.hex
+     File          : zephyr.hex
+     Size          : 173.42 KB
+     Address       : 0x08000000
+   
+   Erasing memory corresponding to segment 0:
+   Erasing internal memory sectors [0 5]
+   Download in Progress:
+   ██████████████████████████████████████████████████ 100%
+   File download complete
+   Time elapsed during download operation: 00:00:04.253
+   RUNNING Program ...
+     Address:      : 0x8000000
+   Application is running, Please Hold on...
+   Start operation achieved successfully
+   ```
 
 ## Resources
 
