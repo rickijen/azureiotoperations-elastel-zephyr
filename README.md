@@ -12,7 +12,7 @@ This tutorial demonstrates a real-world scenario where a MCU-based device (an AR
 
 ## Architecture
 
-![Architecture](C:\Users\rijen\Downloads\Elastel-HiveMQ.png)
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Elastel-HiveMQ.png?raw=true" alt="Architecture" data-align="inline">
 
 ## Prerequisites
 
