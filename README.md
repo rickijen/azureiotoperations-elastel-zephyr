@@ -1,7 +1,7 @@
 # Connecting IIoT Gateway to Azure IoT Operations
 
 <p align="center">
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-main.jpg?raw=true" alt="main-pic" width="339" data-align="center">
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-main.jpg?raw=true" alt="main-pic" width="350" data-align="center">
 </p>
 
 An Industrial IoT (IIoT) solution deployed at the edge location often integrates microcontroller-based devices, sensors, and PLCs into industrial processes to gather data, monitor operations, and improve efficiency.  The goal is to enable real-time monitoring, predictive maintenance, automation, and data-driven decision-making in industries such as manufacturing, building automation, energy, transportation, and agriculture.
@@ -19,7 +19,7 @@ This tutorial demonstrates a real-world scenario where a MCU-based device (an AR
 Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
 
 <p align="center">
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32elastel.jpg?raw=true" alt="photo" width="356">
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32elastel.jpg?raw=true" alt="photo" width="385">
 </p>
 
 
@@ -263,7 +263,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 2. Use the same set of server and client certificates to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO.
    
    <p align="center">
-   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true" title="" alt="s" width="471">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true" title="" alt="s" width="485">
    </p>
    
 
