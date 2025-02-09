@@ -10,7 +10,7 @@ IIoT gateway is a critical component in the solution to aggregate data collected
 
 [Azure IoT Operations](https://learn.microsoft.com/en-us/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster installed at the edge site. With proper [Data Flows](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT Gateway can be delivered to the cloud. Control commands can be delivered from cloud to devices as well.
 
-## Architecture Overview
+## Overview
 
 ![Architecture](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Elastel-HiveMQ.png?raw=true)
 
@@ -18,9 +18,12 @@ This tutorial demonstrates a real-world scenario where a MCU-based device (an AR
 
 Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
 
-<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32f429zi.jpg?raw=true" alt="stm32" width="200">  <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/elastel-2.JPG?raw=true" alt="eg324" width="214">
+<p align="center">
+<img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32elastel.jpg?raw=true" alt="photo" width="356">
+</p>
 
-## Tutorial Prerequisites
+
+## Prerequisites
 
 - An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) is already installed locally at the edge. Follow this [doc](https://learn.microsoft.com/en-us/azure/iot-operations/deploy-iot-ops/howto-prepare-cluster?tabs=ubuntu) to make sure your cluster is prepared to install IoT Operations.
 
@@ -58,7 +61,9 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
    az iot ops check
    ```
    
-   ![asdc](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/iot-ops-check.png?raw=true)
+   <p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/iot-ops-check.png?raw=true" title="" alt="asdc" width="404">
+   </p>
 
 4. In order to secure the MQTT bridge between IIoT Gateway and AIO MQTT Broker, prepare **server and client certificates** to be installed on the AIO MQTT broker and IIoT Gateway by following: [Tutorial: Azure IoT Operations MQTT broker TLS, X.509 client authentication, and ABAC - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/manage-mqtt-broker/tutorial-tls-x509)
 
@@ -257,11 +262,12 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 2. Use the same set of server and client certificates to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO.
    
-   ![s](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true)
+   <p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true" title="" alt="s" width="471">
+   </p>
+   
 
 ## Conclusion
-
-From this point, you are ready to configure AIO Data Flows,  process and route data to the Data Endpoints. That is not covered in this tutorial as the procedures are outlined in the Azure document: [Process and route data with data flows - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow)
 
 As mentioned in the beginning of tutorial, the scenario is a very common method of establishing data communication between IIoT sensors and the cloud via an IIoT Gateway.
 
