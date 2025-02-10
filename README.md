@@ -163,7 +163,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    CONFIG_NET_CONFIG_PEER_IPV4_ADDR="192.168.1.105"
    ```
    
-   Next, very the current directory and activate the Python VENV for the Zephyr build:
+   Next, verify the current directory and activate the Python VENV for the Zephyr build:
    
    ```bash
    (.venv) $ pwd
