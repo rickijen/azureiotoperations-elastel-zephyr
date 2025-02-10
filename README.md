@@ -136,6 +136,9 @@ At this point, the AIO MQTT Broker is ready.
    
    ```bash
    azureuser@ubuntu2404:~$ sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
+   ```
+   From the output, we can see the MQTT connection established between gateway and AIO:
+   ```bash
    <6>2025-02-08T17:49:55.248Z aio-broker-frontend-0 [mq@311 tid="28"] - accepting new MQTT client connection: 'ElastPro.cloud-01', tag: '4', clean start: false
    <6>2025-02-08T17:49:55.253Z aio-broker-frontend-0 [mq@311 tid="28"] - new MQTT client connection accepted: 'ElastPro.cloud-01', tag: '4', with credentials that expire at 2025-04-23T02:17:44+00:00
    ```
