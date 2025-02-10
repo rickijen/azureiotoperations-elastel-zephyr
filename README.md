@@ -166,19 +166,20 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    Next, verify the current directory and activate the Python VENV for the Zephyr build:
    
    ```bash
-   (.venv) $ pwd
+   pwd
    
    Path
    ----
    C:\Users\rijen\zephyrproject\zephyr
-   
-   (.venv) $ ~\zephyrproject\.venv\Scripts\Activate.ps1
+   ```
+   ```bash
+   ~\zephyrproject\.venv\Scripts\Activate.ps1
    ```
    
    Next, execute the west command with your board target. For example, the board target for my STM32 is **nucleo_f429zi**. Since I have built this app in the past, the pristine build option '**auto**' will not perform a clean build. If you're building it for the first time, you will observe a clean build. 
    
    ```bash
-   (.venv) $ west build -b nucleo_f429zi .\samples\net\mqtt_publisher --build-dir mqtt_publisher --p auto
+   west build -b nucleo_f429zi .\samples\net\mqtt_publisher --build-dir mqtt_publisher --p auto
    ```
    
    Here's the output of the build:
@@ -198,7 +199,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 4. Once build is completed, flash the binary to the board.
    
    ```bash
-   (.venv) $ west flash --build-dir mqtt_publisher
+   west flash --build-dir mqtt_publisher
    ```
    
    And here's the expected output of download and flash:
