@@ -135,7 +135,7 @@ At this point, the AIO MQTT Broker is ready.
 3. Examine the Kubernetes logs of AIO MQTT broker and confirm it's securely bridged with EG324 Gateway:
    
    ```bash
-   azureuser@ubuntu2404:~$ sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
+   $ sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
    ```
    From the output, we can see the MQTT connection established between gateway and AIO:
    ```bash
