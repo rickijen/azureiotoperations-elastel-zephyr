@@ -8,7 +8,7 @@ An Industrial IoT (IIoT) solution deployed at the edge location often integrates
 
 IIoT gateway is a critical component in the solution to aggregate data collected from industry standard protocols (such as [Modbus](https://en.wikipedia.org/wiki/Modbus), [BACnet](https://en.wikipedia.org/wiki/BACnet), [OPC UA](https://en.wikipedia.org/wiki/OPC_Unified_Architecture), [Sparkplug](https://sparkplug.eclipse.org/), etc.). The Gateway then processes and routes data to the cloud.
 
-[Azure IoT Operations](https://learn.microsoft.com/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster installed at the edge site. With proper [Data Flows](https://learn.microsoft.com/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT Gateway can be delivered to the cloud. Control commands can be delivered from cloud to devices as well.
+[Azure IoT Operations](https://learn.microsoft.com/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster installed at the edge site. With proper [Data Flows](https://learn.microsoft.com/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT gateway can be delivered to the cloud. Control commands can be delivered from cloud to devices as well.
 
 ## Overview
 
@@ -135,9 +135,11 @@ At this point, the AIO MQTT Broker is ready.
 3. Examine the Kubernetes logs of AIO MQTT broker and confirm it's securely bridged with EG324 Gateway:
    
    ```bash
-   $ sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
+   sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
    ```
+   
    From the output, we can see the MQTT connection established between gateway and AIO:
+   
    ```bash
    <6>2025-02-08T17:49:55.248Z aio-broker-frontend-0 [mq@311 tid="28"] - accepting new MQTT client connection: 'ElastPro.cloud-01', tag: '4', clean start: false
    <6>2025-02-08T17:49:55.253Z aio-broker-frontend-0 [mq@311 tid="28"] - new MQTT client connection accepted: 'ElastPro.cloud-01', tag: '4', with credentials that expire at 2025-04-23T02:17:44+00:00
@@ -151,8 +153,8 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 2. Git clone the Zephyr demo app and copy the code to the **sample** directory under the Zephyr project
    
-   ```bash
-   $ git clone https://github.com/rickijen/zephyr-dhcp-mqtt
+   ```sh
+   git clone https://github.com/rickijen/zephyr-dhcp-mqtt
    # And copy the code under Zephyr sample dir, for example, mine is:
    # C:\Users\rijen\zephyrproject\zephyr\samples\net\mqtt_publisher
    ```
@@ -165,13 +167,14 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    
    Next, verify the current directory and activate the Python VENV for the Zephyr build:
    
-   ```bash
+   ```sh
    pwd
    
    Path
    ----
    C:\Users\rijen\zephyrproject\zephyr
    ```
+   
    ```bash
    ~\zephyrproject\.venv\Scripts\Activate.ps1
    ```
