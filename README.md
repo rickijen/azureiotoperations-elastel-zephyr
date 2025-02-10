@@ -8,7 +8,7 @@ An Industrial IoT (IIoT) solution deployed at the edge location often integrates
 
 IIoT gateway is a critical component in the solution to aggregate data collected from industry standard protocols (such as [Modbus](https://en.wikipedia.org/wiki/Modbus), [BACnet](https://en.wikipedia.org/wiki/BACnet), [OPC UA](https://en.wikipedia.org/wiki/OPC_Unified_Architecture), [Sparkplug](https://sparkplug.eclipse.org/), etc.). The Gateway then processes and routes data to the cloud.
 
-[Azure IoT Operations](https://learn.microsoft.com/en-us/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster installed at the edge site. With proper [Data Flows](https://learn.microsoft.com/en-us/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT Gateway can be delivered to the cloud. Control commands can be delivered from cloud to devices as well.
+[Azure IoT Operations](https://learn.microsoft.com/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster installed at the edge site. With proper [Data Flows](https://learn.microsoft.com/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT Gateway can be delivered to the cloud. Control commands can be delivered from cloud to devices as well.
 
 ## Overview
 
@@ -24,7 +24,7 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
 
 ## Prerequisites
 
-- An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) is already installed locally at the edge. Follow this [doc](https://learn.microsoft.com/en-us/azure/iot-operations/deploy-iot-ops/howto-prepare-cluster?tabs=ubuntu) to make sure your cluster is prepared to install IoT Operations.
+- An [Azure Arc-enabled Kubernetes](https://learn.microsoft.com/azure/azure-arc/kubernetes/overview) cluster (such as [K3s]([K3s](https://k3s.io/))) is already installed locally at the edge. Follow this [doc](https://learn.microsoft.com/en-us/iot-operations/deploy-iot-ops/howto-prepare-cluster?tabs=ubuntu) to make sure your cluster is prepared to install IoT Operations.
 
 - Install Elastel EG324 IIoT Gateway and completed the steps in [Getting Started | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Getting_Started)
 
@@ -36,13 +36,13 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
 
 1. Make sure you have the latest Azure CLI extension.
    
-   ```
+   ```bash
    az extension add --upgrade --name azure-iot-ops
    ```
 
 2. Deploy to the Kubernetes cluster (example: for my single node cluster).
    
-   ```
+   ```bash
    az iot ops create --subscription XXX \
    -g iot --cluster redondok3s --custom-location redondok3s-cl-3792 \
    -n redondok3s-ops-instance --resource-id /subscriptions/XXX/resourceGroups/iot/providers/Microsoft.DeviceRegistry/schemaRegistries/schema-registry-redondo \
@@ -55,7 +55,7 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
 
 3. Verify IoT Ops service deployment output for health, configuration, and usability. If you have installed IoT Ops previously, make sure to **check for upgrade** first.
    
-   ```
+   ```bash
    az extension add --upgrade --name azure-iot-ops
    az iot ops check
    ```
@@ -64,9 +64,9 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/iot-ops-check.png?raw=true" title="" alt="asdc" width="404">
    </p>
 
-4. In order to secure the MQTT bridge between IIoT Gateway and AIO MQTT Broker, prepare **server and client certificates** to be installed on the AIO MQTT broker and IIoT Gateway by following: [Tutorial: Azure IoT Operations MQTT broker TLS, X.509 client authentication, and ABAC - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/manage-mqtt-broker/tutorial-tls-x509)
+4. In order to secure the MQTT bridge between IIoT Gateway and AIO MQTT Broker, prepare **server and client certificates** to be installed on the AIO MQTT broker and IIoT Gateway by following: [Tutorial: Azure IoT Operations MQTT broker TLS, X.509 client authentication, and ABAC - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/azure/iot-operations/manage-mqtt-broker/tutorial-tls-x509)
 
-5. Create a new AIO MQTT Broker Load Balancer listener (with the server certificate created in the previous step) on **port 8883** with **X509-auth**: [Secure MQTT broker communication by using BrokerListener - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/manage-mqtt-broker/howto-configure-brokerlistener?tabs=portal%2Ctest)
+5. Create a new AIO MQTT Broker Load Balancer listener (with the server certificate created in the previous step) on **port 8883** with **X509-auth**: [Secure MQTT broker communication by using BrokerListener - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/azure/iot-operations/manage-mqtt-broker/howto-configure-brokerlistener?tabs=portal%2Ctest)
 
 At this point, the AIO MQTT Broker is ready.
 
@@ -94,7 +94,7 @@ At this point, the AIO MQTT Broker is ready.
    | bridge_certfile | The client certificate of Mosquitto            |
    | bridge_keyfile  | The private key of client certificate          |
    
-   ```
+   ```bash
    # Place your local configuration in /etc/mosquitto/conf.d/
    #
    # A full description of the configuration file is at
@@ -128,13 +128,13 @@ At this point, the AIO MQTT Broker is ready.
 
 2. Restart the service to securely bridge the two MQTT brokers
    
-   ```
+   ```bash
    systemctl restart mosquitto
    ```
 
 3. Examine the Kubernetes logs of AIO MQTT broker and confirm it's securely bridged with EG324 Gateway:
    
-   ```
+   ```bash
    azureuser@ubuntu2404:~$ sudo kubectl logs aio-broker-frontend-0 -c broker -n azure-iot-operations | grep Elast
    <6>2025-02-08T17:49:55.248Z aio-broker-frontend-0 [mq@311 tid="28"] - accepting new MQTT client connection: 'ElastPro.cloud-01', tag: '4', clean start: false
    <6>2025-02-08T17:49:55.253Z aio-broker-frontend-0 [mq@311 tid="28"] - new MQTT client connection accepted: 'ElastPro.cloud-01', tag: '4', with credentials that expire at 2025-04-23T02:17:44+00:00
@@ -148,19 +148,21 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 2. Git clone the Zephyr demo app and copy the code to the **sample** directory under the Zephyr project
    
-   ```
-   git clone https://github.com/rickijen/zephyr-dhcp-mqtt
+   ```bash
+   $ git clone https://github.com/rickijen/zephyr-dhcp-mqtt
    # And copy the code under Zephyr sample dir, for example, mine is:
    # C:\Users\rijen\zephyrproject\zephyr\samples\net\mqtt_publisher
    ```
 
 3. Build the project with the Zephyr util **West**, or if you have already configured proper VS Code IDE extensions, you can simply build directly from VS Code. Update the file **prj.conf** with the correct IP address of your IIoT Gateway before running west build.
    
-   ```
+   ```bash
    CONFIG_NET_CONFIG_PEER_IPV4_ADDR="192.168.1.105"
    ```
    
-   ```
+   Next, very the current directory and activate the Python VENV for the Zephyr build:
+   
+   ```bash
    (.venv) $ pwd
    
    Path
@@ -168,7 +170,17 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    C:\Users\rijen\zephyrproject\zephyr
    
    (.venv) $ ~\zephyrproject\.venv\Scripts\Activate.ps1
+   ```
+   
+   Next, execute the west command with your board target. For example, the board target for my STM32 is **nucleo_f429zi**. Since I have built this app in the past, the pristine build option '**auto**' will not perform a clean build. If you're building it for the first time, you will observe a clean build. 
+   
+   ```bash
    (.venv) $ west build -b nucleo_f429zi .\samples\net\mqtt_publisher --build-dir mqtt_publisher --p auto
+   ```
+   
+   Here's the output of the build:
+   
+   ```bash
    [1/13] Generating include/generated/zephyr/version.h
    -- Zephyr version: 4.0.99 (C:/Users/rijen/zephyrproject/zephyr), build: v4.0.0-4184-ga253fe27c9f1
    [13/13] Linking C executable zephyr\zephyr.elf
@@ -182,8 +194,13 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 4. Once build is completed, flash the binary to the board.
    
-   ```
+   ```bash
    (.venv) $ west flash --build-dir mqtt_publisher
+   ```
+   
+   And here's the expected output of download and flash:
+   
+   ```bash
    -- west flash: rebuilding
    ninja: no work to do.
    -- west flash: using runner stm32cubeprogrammer
@@ -229,9 +246,9 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    Start operation achieved successfully
    ```
 
-5. From the serial console of the STM32 MCU device, we can see the MQTT message are delivered to EG324 Gateway:
+5. From the serial console of the STM32 MCU device, we can see the MQTT messages are delivered to EG324 Gateway. You will see the device acquiring a DHCP address and performing MQTT CONNECT & MQTT PUBLISH. You will also see mqtt_ping to keep the session alive.
    
-   ```
+   ```bash
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:    Address[1]: 192.168.1.104
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Subnet[1]: 255.255.255.0
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Router[1]: 192.168.1.1
@@ -271,7 +288,7 @@ As mentioned in the beginning of tutorial, the scenario is a very common method 
 
 ## Resources
 
-- [Deployment overview - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-operations/deploy-iot-ops/overview-deploy)
+- [Deployment overview - Azure IoT Operations | Microsoft Learn](https://learn.microsoft.com/azure/iot-operations/deploy-iot-ops/overview-deploy)
 
 - [EG324 IIoT Gateway, Arm-based industrial Computer - Elastel](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/)
 
