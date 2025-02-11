@@ -283,7 +283,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 1. Install your favorite MQTT client, or download [MQTTX: Your All-in-one MQTT Client Toolbox](https://mqttx.app/)
 
-2. Use the same set of server and client certificates to connect and subscribe to the topic "**sensors**"" on AIO MQTT broker to confirm messages are delivered from EG324 gateway to AIO broker.
+2. Use the same set of server and client certificates to connect and subscribe to the topic **sensors/#** on AIO MQTT broker to confirm messages are delivered from EG324 gateway to AIO broker.
    
    Here's the screen of mTLS configuration of MQTTX:
    
