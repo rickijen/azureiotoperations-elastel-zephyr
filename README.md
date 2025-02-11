@@ -72,7 +72,7 @@ At this point, the AIO MQTT Broker is ready.
 
 ## Install Elastel EG324 IIoT Gateway
 
-**<mark> WARNING! </mark>** *This is an industrial-grade equipment. When used in a residential environment, make sure you follow expert guidance on how to properly supply 12V DC power to the unit to avoid damage/hazards. In my lab, I have properly mounted the gateway on a DIN rail attached to the server rack with the NVVV EDR-120W-12V Industrial DIN rail power supply as shown in the photo at the beginning of this tutorial.*
+**WARNING** *This is an industrial-grade equipment. When used in a residential environment, make sure you follow expert guidance on how to properly supply 12V DC power to the unit to avoid damage/hazards. In my lab, I have properly mounted the gateway on a DIN rail attached to the server rack with the NVVV EDR-120W-12V Industrial DIN rail power supply as shown in the photo at the beginning of this tutorial.*
 
 1. Go to the web portal of EG324 and configure networking: [WAN | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Network/WAN#wired-ethernet-settings)
 
@@ -284,6 +284,14 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 1. Install your favorite MQTT client, or download [MQTTX: Your All-in-one MQTT Client Toolbox](https://mqttx.app/)
 
 2. Use the same set of server and client certificates to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO.
+   
+   Here's the screen of mTLS configuration of MQTTX:
+   
+   <p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx-config.png?raw=true" title="" alt="s" width="485">
+   </p>
+   
+   And here's the screen of subscribing to the topic "**sensors**":
    
    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true" title="" alt="s" width="485">
