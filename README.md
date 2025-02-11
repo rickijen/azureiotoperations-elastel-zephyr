@@ -283,7 +283,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 1. Install your favorite MQTT client, or download [MQTTX: Your All-in-one MQTT Client Toolbox](https://mqttx.app/)
 
-2. Use the same set of server and client certificates to connect and subscribe to the topic sensors on AIO MQTT broker to confirm messages are delivered from EG324 to AIO.
+2. Use the same set of server and client certificates to connect and subscribe to the topic "**sensors**"" on AIO MQTT broker to confirm messages are delivered from EG324 gateway to AIO broker.
    
    Here's the screen of mTLS configuration of MQTTX:
    
@@ -299,7 +299,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 ## Conclusion
 
-As mentioned in the beginning of tutorial, the scenario is a very common method of establishing data communication between IIoT sensors and the cloud via an IIoT Gateway.
+As mentioned in the beginning of tutorial, this scenario is a very common method of establishing data communication between IIoT sensors and the cloud via an IIoT Gateway. Be aware that you do have the option to establish MQTT session over TLS end-to-end: from MCU device to IIoT Gateway and finally AIO MQTT. But we also need to consider the MCU devices are typically resource-constrained, therefore performing crypto operations on MCU devices will increase the binary footprint and impact performance. In this tutorial, we opted to only secure the MQTT bridge between gateway and AIO, but do discuss with your team to decide the trade-off for your project.
 
 ## Resources
 
