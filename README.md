@@ -297,6 +297,27 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/mqttx.png?raw=true" title="" alt="s" width="485">
    </p>
 
+## Configure AIO Data Flow Endpoints & Data Flows
+
+Now that we have the data collected from sensors, let's configure AIO data flow endpoints and route data via Data Flows. We will leverage **Azure Data Explorer** as our cloud destination.
+
+1. Create an Azure Data Explore Cluster and a database (mapped to the JSON fields of your MQTT data from MCU sensors) in the cluster. Then, assign AIO's user assigned or system assigned managed identity to the database with the RBAC role "**Database Ingestor**". Once that's completed, we will be able to configure the AIO data flow endpoint for Data Explorer. For example, your database permission should look like:
+   <p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/dx-db-perm.png?raw=true" title="" alt="s" width="485">
+   </p>
+2. Next, in your AIO Operations Portal, create AIO Dataflow endpoint with references to your Data Explorer Cluster. For example, my cluster name is "redondoadx":
+   <p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/aio-data-flow-endpoint.png?raw=true" title="" alt="s" width="485">
+   </p>
+3. Next, create a new Data Flow source of message broker.
+	<p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/data-flow-source.png?raw=true" title="" alt="s" width="485">
+   </p>
+4. After adding the destination data flow endpoint created earlier, it should look like:
+	<p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/data-flow.png?raw=true" title="" alt="s" width="485">
+   </p>
+
 ## Conclusion
 
 As mentioned in the beginning of tutorial, this scenario is a very common method of establishing data communication between IIoT sensors and the cloud via an IIoT Gateway. Be aware that you do have the option to establish MQTT session over TLS end-to-end: from MCU device to IIoT Gateway and finally AIO MQTT. But we also need to consider the MCU devices are typically resource-constrained, therefore performing crypto operations on MCU devices will increase the binary footprint and impact performance. In this tutorial, we opted to only secure the MQTT bridge between gateway and AIO, but do discuss with your team to decide the trade-off for your project.
