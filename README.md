@@ -43,7 +43,7 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
 2. Deploy to the Kubernetes cluster (example: for my single node cluster).
    
    ```bash
-   az iot ops create --subscription XXX \
+   az iot ops create --subscription $SUBSCRIPTION_ID \
    -g iot --cluster $CLUSTER_NAME --custom-location $CUSTOM_LOCATION \
    -n $AIO_INSTANCE_NAME --resource-id /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG_NAME/providers/Microsoft.DeviceRegistry/schemaRegistries/schema-registry-redondo \
    --broker-frontend-replicas 1 --broker-frontend-workers 1 \
