@@ -14,7 +14,7 @@ IIoT gateway is a critical component in the solution to aggregate data collected
 
 ![Architecture](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Zephyr-Elastel-AIO.png?raw=true)
 
-This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then routes data to the AIO MQTT broker. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. Finally, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly.
+This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then routes data to the AIO MQTT broker which then delivers data to the cloud via Data Flow. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. Finally, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly.
 
 Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
 
@@ -306,16 +306,19 @@ Now that we have the data collected from sensors, let's configure AIO data flow 
    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/dx-db-perm.png?raw=true" title="" alt="s" width="485">
    </p>
+
 2. Next, in your AIO Operations Portal, create a new **data flow endpoint** with references to your Data Explorer Cluster. For example, my cluster is "redondoadx":
    
    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/aio-data-flow-endpoint.png?raw=true" title="" alt="s" width="485">
    </p>
+
 3. Next, create a new **data flow** with the source as message broker.
    
    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/data-flow-source.png?raw=true" title="" alt="s" width="485">
    </p>
+
 4. After adding the destination data flow endpoint created earlier, the data flow should look like:
    
    <p align="center">
