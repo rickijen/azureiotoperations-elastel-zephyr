@@ -301,39 +301,46 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 Now that we have the data collected from sensors, let's configure AIO data flow endpoints and route data via Data Flows. We will leverage **Azure Data Explorer** as our cloud destination.
 
-1. Create an Azure Data Explore Cluster and a database (mapped to the JSON fields of your MQTT data from MCU sensors) in the cluster. Then, assign AIO's user assigned or system assigned managed identity to the database with the RBAC role "**Database Ingestor**". Once that's completed, we will be able to configure the AIO data flow endpoint for Data Explorer. For example, my user assigned managed identity for AIO is "iot-ops-cloud-connections" and my database permission is:
+1. Create an Azure Data Explore Cluster and a database (mapped to the JSON fields of your MQTT data from MCU sensors) in the cluster. Then, assign AIO's user assigned or system assigned managed identity to the database with the RBAC role "**Database Ingestor**". Once that's completed, we will be able to configure the AIO data flow endpoint for Data Explorer. For example, my user assigned managed identity for AIO is "iot-ops-cloud-connections" and my database permission of my data explorer cluster "redondoadx" looks like:
+   
    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/dx-db-perm.png?raw=true" title="" alt="s" width="485">
    </p>
-2. Next, in your AIO Operations Portal, create AIO Dataflow endpoint with references to your Data Explorer Cluster. For example, my cluster name is "redondoadx":
+2. Next, in your AIO Operations Portal, create a new **data flow endpoint** with references to your Data Explorer Cluster. For example, my cluster is "redondoadx":
+   
    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/aio-data-flow-endpoint.png?raw=true" title="" alt="s" width="485">
    </p>
-3. Next, create a new Data Flow source of message broker.
-	<p align="center">
+3. Next, create a new **data flow** with the source as message broker.
+   
+   <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/data-flow-source.png?raw=true" title="" alt="s" width="485">
    </p>
-4. After adding the destination data flow endpoint created earlier, it should look like:
-	<p align="center">
+4. After adding the destination data flow endpoint created earlier, the data flow should look like:
+   
+   <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/data-flow.png?raw=true" title="" alt="s" width="485">
    </p>
 
 ## Query the data in the Data Explorer Database
-You may want to add a few sensor telemetry fields from the sensor data. For example, besides the random number as temperature, I also added humidity and pressure as those are the common sensors.
+
+You may want to add a few more sensor telemetry fields from the MCU device so we can query with more meaningful data. For example, besides temperature, I also added humidity and pressure.
 
 To verify data, execute the KQL query command in the Data Explorer
+
 ```sql
 SensorTelemetry
 | where isnotnull(temperature)
 | take 100
 | project temperature, humidity, pressure
 ```
+
 You will find the output as:
-	<p align="center">
+    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/kql.png?raw=true" title="" alt="s" width="485">
    </p>
 
-Congratulations! At this point, you have completed the end-to-end data ingestion from MCU device to IIoT Gateway to AIO, and finally, Azure Data Explorer.
+**Congratulations!** At this point, you have completed the end-to-end data ingestion flow: MCU device -> IIoT Gateway -> AIO -> Azure Data Explorer.
 
 ## Conclusion
 
