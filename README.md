@@ -301,7 +301,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 Now that we have the data collected from sensors, let's configure AIO data flow endpoints and route data via Data Flows. We will leverage **Azure Data Explorer** as our cloud destination.
 
-1. Create an Azure Data Explore Cluster and a database (mapped to the JSON fields of your MQTT data from MCU sensors) in the cluster. Then, assign AIO's user assigned or system assigned managed identity to the database with the RBAC role "**Database Ingestor**". Once that's completed, we will be able to configure the AIO data flow endpoint for Data Explorer. For example, your database permission should look like:
+1. Create an Azure Data Explore Cluster and a database (mapped to the JSON fields of your MQTT data from MCU sensors) in the cluster. Then, assign AIO's user assigned or system assigned managed identity to the database with the RBAC role "**Database Ingestor**". Once that's completed, we will be able to configure the AIO data flow endpoint for Data Explorer. For example, my user assigned managed identity for AIO is "iot-ops-cloud-connections" and my database permission is:
    <p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/dx-db-perm.png?raw=true" title="" alt="s" width="485">
    </p>
