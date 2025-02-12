@@ -44,8 +44,8 @@ Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutori
    
    ```bash
    az iot ops create --subscription XXX \
-   -g iot --cluster redondok3s --custom-location redondok3s-cl-3792 \
-   -n redondok3s-ops-instance --resource-id /subscriptions/XXX/resourceGroups/iot/providers/Microsoft.DeviceRegistry/schemaRegistries/schema-registry-redondo \
+   -g iot --cluster $CLUSTER_NAME --custom-location $CUSTOM_LOCATION \
+   -n $AIO_INSTANCE_NAME --resource-id /subscriptions/XXX/resourceGroups/$RG_NAME/providers/Microsoft.DeviceRegistry/schemaRegistries/schema-registry-redondo \
    --broker-frontend-replicas 1 --broker-frontend-workers 1 \
    --broker-backend-part 1 --broker-backend-workers 1 \
    --broker-backend-rf 2 --broker-mem-profile Low \
@@ -317,6 +317,23 @@ Now that we have the data collected from sensors, let's configure AIO data flow 
 	<p align="center">
    <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/data-flow.png?raw=true" title="" alt="s" width="485">
    </p>
+
+## Query the data in the Data Explorer Database
+You may want to add a few sensor telemetry fields from the sensor data. For example, besides the random number as temperature, I also added humidity and pressure as those are the common sensors.
+
+To verify data, execute the KQL query command in the Data Explorer
+```sql
+SensorTelemetry
+| where isnotnull(temperature)
+| take 100
+| project temperature, humidity, pressure
+```
+You will find the output as:
+	<p align="center">
+   <img src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/kql.png?raw=true" title="" alt="s" width="485">
+   </p>
+
+Congratulations! At this point, you have completed the end-to-end data ingestion from MCU device to IIoT Gateway to AIO, and finally, Azure Data Explorer.
 
 ## Conclusion
 
