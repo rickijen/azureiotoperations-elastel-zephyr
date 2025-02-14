@@ -28,7 +28,7 @@ Here are the MCU device STM32 Nucleo and Elastel EG324 IIoT Gateway configured i
 
 - Install Elastel EG324 IIoT Gateway and completed the steps in [Getting Started | Elastel Docs Center](https://docs.elastel.com/docs/ElastPro/Getting_Started)
 
-- MCU-based development boards (from Nordic, ST, NXP, etc.).
+- MCU-based development boards (from Nordic, ST, NXP, etc.). If you are interested in the one I have, order from here: [NUCLEO-F439ZI STMicroelectronics | Mouser](https://www.mouser.com/ProductDetail/STMicroelectronics/NUCLEO-F439ZI?qs=w%2Fv1CP2dgqohyY3gLxBfCw%3D%3D&mgh=1&srsltid=AfmBOooGrMnVJmcE8iWlq3w1uEqN0iw2XGkakoi75SCoOK9dGK_cnOg5U3s)
 
 - Prepare Zephyer SDK toolchains and its Python build environment by following: [Getting Started Guide — Zephyr Project Documentation](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) 
 
