@@ -6,7 +6,7 @@
 
 An Industrial IoT (IIoT) solution deployed at the edge location often integrates microcontroller-based devices, sensors, and PLCs into industrial processes to gather data, monitor operations, and improve efficiency.  The goal is to enable real-time monitoring, predictive maintenance, automation, and data-driven decision-making in industries such as manufacturing, building automation, energy, transportation, and agriculture.
 
-IIoT gateway is a critical component in the solution to aggregate data collected from industry standard protocols (such as [Modbus](https://en.wikipedia.org/wiki/Modbus), [BACnet](https://en.wikipedia.org/wiki/BACnet), [OPC UA](https://en.wikipedia.org/wiki/OPC_Unified_Architecture), [Sparkplug](https://sparkplug.eclipse.org/), etc.). The Gateway then processes and routes data to the cloud.
+IIoT gateway is a critical component in the solution to aggregate data collected from industry standard protocols (such as [Modbus](https://en.wikipedia.org/wiki/Modbus), [BACnet](https://en.wikipedia.org/wiki/BACnet), [OPC UA](https://en.wikipedia.org/wiki/OPC_Unified_Architecture), [Sparkplug](https://sparkplug.eclipse.org/), etc.). The IIoT gateway then processes and routes data to the cloud.
 
 [Azure IoT Operations](https://learn.microsoft.com/azure/iot-operations/overview-iot-operations) features an enterprise-grade MQTT broker that is deployed locally in an Arc-enabled Kubernetes cluster installed at the edge site. With proper [Data Flows](https://learn.microsoft.com/azure/iot-operations/connect-to-cloud/overview-dataflow) configured, data gathered from the IIoT gateway can be delivered to the cloud. Control commands can be delivered from cloud to devices as well.
 
@@ -14,9 +14,9 @@ IIoT gateway is a critical component in the solution to aggregate data collected
 
 ![Architecture](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Zephyr-Elastel-AIO.png?raw=true)
 
-This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then routes data to the AIO MQTT broker which then delivers data to the cloud via Data Flow. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. Finally, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly.
+This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then routes data to the AIO MQTT broker which then delivers data to the cloud via Data Flow. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. To validate the data delivered to Azure IoT Operations instance, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly. Finally, we will configure Data Flow and examine the data in Azure Data Explorer cluster database.
 
-Here are the MCU device and Elastel EG324 IIoT Gateway configured in this tutorial:
+Here are the MCU device STM32 Nucleo and Elastel EG324 IIoT Gateway configured in this tutorial:
 
 <p align="center">
 <img title="" src="https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/stm32elastel.jpg?raw=true" alt="photo" width="385">
