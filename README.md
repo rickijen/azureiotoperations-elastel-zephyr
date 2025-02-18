@@ -12,7 +12,7 @@ IIoT gateway is a critical component in the solution to aggregate data collected
 
 ## Overview
 
-![Architecture](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/Zephyr-Elastel-AIO.png?raw=true)
+![Architecture](https://github.com/rickijen/azureiotoperations-elastel-zephyr/blob/main/artifacts/media/architecture.png?raw=true)
 
 This tutorial demonstrates a real-world scenario where a MCU-based device (an ARM Cortex-M4 based ***STM32F429ZI-Nucleo*** from [STMicroelectronics](https://www.st.com/content/st_com/en.html)) publishes MQTT messages to the [Elastel EG324 IIoT Gateway](https://www.elastel.com/products/iot-gateway/eg324-iot-gateway/). The IIoT Gateway, which then routes data to the AIO MQTT broker which then delivers data to the cloud via Data Flow. [Zephyr](https://docs.zephyrproject.org/latest/develop/getting_started/index.html) is the RTOS running on the STM32 MCU device. In this tutorial, we will build a Zephyr app publishing MQTT messages upstream from the device. To validate the data delivered to Azure IoT Operations instance, we will use a MQTTX client subscribing to the topic and confirm messages are delivered correctly. Finally, we will configure Data Flow and examine the data in Azure Data Explorer cluster database.
 
