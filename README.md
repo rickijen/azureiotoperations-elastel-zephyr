@@ -255,7 +255,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 5. From the serial console of the STM32 MCU device, we can see the MQTT messages are delivered to EG324 Gateway. You will see the device acquiring a DHCP address and performing MQTT CONNECT & MQTT PUBLISH. You will also see mqtt_ping to keep the session alive.
    
-   ```console
+   ```bash
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:    Address[1]: 192.168.1.104
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Subnet[1]: 255.255.255.0
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Router[1]: 192.168.1.1
@@ -278,6 +278,8 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
    [00:00:12.822,000] <dbg> net_sock: zsock_received_cb: (rx_q[0]): ctx=0x20002f20, pkt=0x2000f9c8, st=0, user_data=0
    [00:00:12.822,000] <inf> net_mqtt_publisher_sample: PUBACK packet id: 13567
    ```
+
+6. At this point, we have completed the configuration.
 
 ## Verify MQTT from IIoT Gateway to AIO MQTT broker
 
