@@ -255,7 +255,7 @@ Now that all the plumbing is completed after **securely bridging the two MQTT br
 
 5. From the serial console of the STM32 MCU device, we can see the MQTT messages are delivered to EG324 Gateway. You will see the device acquiring a DHCP address and performing MQTT CONNECT & MQTT PUBLISH. You will also see mqtt_ping to keep the session alive.
    
-   ```bash
+   ```console
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:    Address[1]: 192.168.1.104
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Subnet[1]: 255.255.255.0
    [00:00:08.453,000] <inf> net_mqtt_publisher_sample:     Router[1]: 192.168.1.1
